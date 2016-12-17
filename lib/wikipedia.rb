@@ -25,6 +25,11 @@ module Wikipedia
     client.find_random( options )
   end
 
+  # /w/api.php?action=query&list=geosearch&gsradius=10000&gscoord=11.3544|76.2032&format=json
+  def self.find_nearby( radius, coords, options = {})
+    client.find_nearby( radius, coords, options )
+  end
+
   def self.Configure(&block)
     Configuration.instance.instance_eval(&block)
   end

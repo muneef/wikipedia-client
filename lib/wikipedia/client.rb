@@ -30,6 +30,26 @@ module Wikipedia
       find( title, options )
     end
 
+    def find_nearby( radius, coords, options= {})
+      request_nearby(radius, coords, options)
+    end
+
+    # https://en.wikipedia.org/w/api.php?action=query&list=geosearch&gsradius=10000&gscoord=11.3544|76.2032&format=json
+    # https://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&grnlimit=2&prop=info|extracts&inprop=url
+    def request_nearby( radius, coords, options)
+      request( {
+                 :action => "query",
+                 :prop => %w{ info images extracts },
+                 :list => "geosearch",
+                 :imlimit => "max",
+                 :generator => "geosearch",
+                 :ggsradius => radius,
+                 :gscoord => coords,
+                 :ggscoord => coords,
+                 :inprop => "url"
+               }.merge( options ) )
+    end
+
     # http://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions%7Clinks%7Cimages%7Ccategories&rvprop=content&titles=Flower%20(video%20game)
     def request_page( title, options = {} )
       request( {
@@ -64,6 +84,7 @@ module Wikipedia
 
     def request( options )
       require 'open-uri'
+      puts url_for( options )
       URI.parse( url_for( options ) ).read( "User-Agent" => Configuration[:user_agent] )
     end
 
